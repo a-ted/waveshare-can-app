@@ -54,9 +54,9 @@ coll = COLLECT(
 # macOS .app bundle (ignored on Windows)
 app = BUNDLE(
     coll,
-    name='WaveshareCANAnalyzer.app',
+    name='WaveshareCANAnalyser.app',
     icon='ws_can_app_icon.icns',
-    bundle_identifier='com.aaronteo.waveshare-can-analyzer',
+    bundle_identifier='com.aaronteo.waveshare-can-analyser',
     info_plist={
         'NSHighResolutionCapable': True,
         'CFBundleShortVersionString': '1.0.0',
