@@ -31,8 +31,7 @@ jobs:
         with: { python-version: '3.11' }
       - run: pip install pyinstaller PyQt6 pyserial python-can
       - run: pyinstaller waveshare_can.spec
-      - run: Compress-Archive -Path dist\WaveshareCANAnalyzer -DestinationPath dist\WaveshareCANAnalyzer-win.zip
-      - name: Upload to release
-        uses: softprops/action-gh-release@v2
+      - run: Compress-Archive -Path dist\WaveshareCANAnalyzer.exe -DestinationPath dist\WaveshareCANAnalyzer-win.zip
+      - uses: softprops/action-gh-release@v2
         with:
           files: dist\WaveshareCANAnalyzer-win.zip
