@@ -1,87 +1,139 @@
-name: Build and Release
+name: Build and Release Executables
 
 on:
   push:
-    tags:
-      - 'v*'
+    branches:
+      - main
 
 permissions:
   contents: write
 
 jobs:
+
   build:
+    name: Build (${{ matrix.os }})
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
+        os:
+          - ubuntu-latest
+          - windows-latest
+          - macos-latest
 
     runs-on: ${{ matrix.os }}
 
     steps:
+
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v4
+      - name: Setup Python
+        uses: actions/setup-python@v5
         with:
           python-version: "3.12"
 
       - name: Install dependencies
-        run: pip install -r requirements.txt
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pyinstaller
 
-      - name: Build executable
-        run: pyinstaller waveshare_can_app.spec --clean
-      
+      - name: Build application
+        run: |
+          pyinstaller waveshare_can_app.spec --clean
+
       - name: Show build output
+        shell: bash
         run: |
           ls -R dist
 
-      - name: Rename executable
-        run: |
-          if [[ "$RUNNER_OS" == "Windows" ]]; then
-            mv dist/WaveshareCANAnalyser.exe dist/waveshare_can_app-windows.exe
 
-          elif [[ "$RUNNER_OS" == "Linux" ]]; then
-            mv dist/WaveshareCANAnalyser dist/waveshare_can_app-linux
-
-          elif [[ "$RUNNER_OS" == "macOS" ]]; then
-            mv dist/WaveshareCANAnalyser.app dist/waveshare_can_app-macos.app
-            zip -r dist/waveshare_can_app-macos.zip dist/waveshare_can_app-macos.app
-          fi
+      # ------------------------
+      # Windows
+      # ------------------------
+      - name: Package Windows
+        if: runner.os == 'Windows'
         shell: bash
+        run: |
+          mv dist/WaveshareCANAnalyser.exe dist/waveshare_can_app-windows.exe
 
+
+      # ------------------------
+      # Linux
+      # ------------------------
+      - name: Package Linux
+        if: runner.os == 'Linux'
+        shell: bash
+        run: |
+          mv dist/WaveshareCANAnalyser dist/waveshare_can_app-linux
+          chmod +x dist/waveshare_can_app-linux
+
+
+      # ------------------------
+      # macOS DMG
+      # ------------------------
+      - name: Install create-dmg
+        if: runner.os == 'macOS'
+        run: |
+          brew install create-dmg
+
+
+      - name: Package macOS DMG
+        if: runner.os == 'macOS'
+        run: |
+          create-dmg \
+            --volname "Waveshare CAN Analyser" \
+            --window-size 600 400 \
+            --icon "WaveshareCANAnalyser.app" 150 150 \
+            --app-drop-link 450 150 \
+            dist/waveshare_can_app-macos.dmg \
+            dist/WaveshareCANAnalyser.app
+
+
+      # ------------------------
+      # Upload build artifact
+      # ------------------------
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: waveshare_can_app-${{ matrix.os }}
-          path: dist
+          path: dist/*
+
+
 
   release:
+
+    name: Create GitHub Release
+
     needs: build
+
     runs-on: ubuntu-latest
 
     steps:
+
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Download all build artifacts
+
+      - name: Download artifacts
         uses: actions/download-artifact@v4
         with:
           merge-multiple: true
+          path: release
 
-      - name: List downloaded files (Debugging)
-        run: ls -R
 
-      - name: Make files executable (Linux/Mac)
-        run: chmod +x waveshare_can_app-* || true
+      - name: Show release files
+        run: |
+          ls -R release
+
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: ${{ github.event.inputs.version }}
-          name: Release ${{ github.event.inputs.version }}
+          tag_name: build-${{ github.run_number }}
+          name: Build ${{ github.run_number }}
           draft: false
           prerelease: false
           files: |
-            waveshare_can_app-linux
-            waveshare_can_app-windows.exe
-            waveshare_can_app-macos
+            release/waveshare_can_app-windows.exe
+            release/waveshare_can_app-linux
+            release/waveshare_can_app-macos.dmg
