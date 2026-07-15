@@ -1,37 +1,82 @@
-name: Build and Release
-
-on:
-  push:
-    tags:
-      - 'v*'
+name: Build and Release Executables
 
 permissions:
   contents: write
 
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Enter the version (e.g., v1.0.0)"
+        required: true
+
 jobs:
-  build-macos:
-    runs-on: macos-latest
+  build:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+
+    runs-on: ${{ matrix.os }}
+
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with: { python-version: '3.11' }
-      - run: pip install pyinstaller PyQt6 pyserial python-can
-      - run: pyinstaller waveshare_can.spec
-      - run: cd dist && zip -r WaveshareCANAnalyzer-mac.zip WaveshareCANAnalyzer.app
-      - name: Upload to release
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Build executable
+        run: pyinstaller waveshare_can_app.spec --clean
+
+      - name: Rename executable
+        run: |
+          if [[ "$RUNNER_OS" == "Windows" ]]; then
+            mv dist/waveshare_can_app.exe dist/waveshare_can_app-windows.exe
+          elif [[ "$RUNNER_OS" == "Linux" ]]; then
+            mv dist/waveshare_can_app dist/waveshare_can_app-linux
+          elif [[ "$RUNNER_OS" == "macOS" ]]; then
+            mv dist/waveshare_can_app dist/waveshare_can_app-macos
+          fi
+        shell: bash
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: waveshare_can_app-${{ matrix.os }}
+          path: dist
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Download all build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          merge-multiple: true
+
+      - name: List downloaded files (Debugging)
+        run: ls -R
+
+      - name: Make files executable (Linux/Mac)
+        run: chmod +x waveshare_can_app-* || true
+
+      - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          files: dist/WaveshareCANAnalyzer-mac.zip
-
-  build-windows:
-    runs-on: windows-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with: { python-version: '3.11' }
-      - run: pip install pyinstaller PyQt6 pyserial python-can
-      - run: pyinstaller waveshare_can.spec
-      - run: Compress-Archive -Path dist\WaveshareCANAnalyzer.exe -DestinationPath dist\WaveshareCANAnalyzer-win.zip
-      - uses: softprops/action-gh-release@v2
-        with:
-          files: dist\WaveshareCANAnalyzer-win.zip
+          tag_name: ${{ github.event.inputs.version }}
+          name: Release ${{ github.event.inputs.version }}
+          draft: false
+          prerelease: false
+          files: |
+            waveshare_can_app-linux
+            waveshare_can_app-windows.exe
+            waveshare_can_app-macos

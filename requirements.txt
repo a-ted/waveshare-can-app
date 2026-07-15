@@ -1,0 +1,4 @@
+PyInstaller==6.15.0
+PyQt6==6.9.1
+pyserial==3.5
+python-can==4.6.1
