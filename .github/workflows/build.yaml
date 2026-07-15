@@ -60,7 +60,7 @@ jobs:
         shell: bash
         run: |
           mv "dist/Waveshare CAN Analyser/Waveshare CAN Analyser.exe" \
-             dist/waveshare_can_app-windows.exe
+             "dist/Waveshare CAN Analyser-windows.exe"
 
 
       # -----------------------
@@ -71,9 +71,9 @@ jobs:
         shell: bash
         run: |
           mv "dist/Waveshare CAN Analyser/Waveshare CAN Analyser" \
-             dist/waveshare_can_app-linux
+             "dist/Waveshare CAN Analyser-linux"
 
-          chmod +x dist/waveshare_can_app-linux
+          chmod +x "dist/Waveshare CAN Analyser-linux"
 
 
       # -----------------------
@@ -97,7 +97,7 @@ jobs:
             --window-size 600 400 \
             --icon "Waveshare CAN Analyser.app" 150 150 \
             --app-drop-link 450 150 \
-            dist/Waveshare CAN Analyser.dmg \
+            "dist/Waveshare CAN Analyser.dmg" \
             dmg_contents
 
 
