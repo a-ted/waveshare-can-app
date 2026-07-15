@@ -37,7 +37,7 @@ exe = EXE(
     strip=False,
     upx=False,              # UPX can break Qt on some platforms
     console=False,          # no terminal window
-    icon='ws_can_app_icon.icns',   # macOS icon — remove line if you don't have one
+    icon='ws_can_app_icon.ico',
 )
 
 coll = COLLECT(
