@@ -1,0 +1,30 @@
+name: Build
+
+on: [push]
+
+jobs:
+  build-macos:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.11' }
+      - run: pip install pyinstaller PyQt6 pyserial python-can
+      - run: pyinstaller waveshare_can.spec
+      - uses: actions/upload-artifact@v4
+        with:
+          name: macos-app
+          path: dist/WaveshareCANAnalyzer.app
+
+  build-windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.11' }
+      - run: pip install pyinstaller PyQt6 pyserial python-can
+      - run: pyinstaller waveshare_can.spec
+      - uses: actions/upload-artifact@v4
+        with:
+          name: windows-exe
+          path: dist/WaveshareCANAnalyzer/
