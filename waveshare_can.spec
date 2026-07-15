@@ -29,7 +29,7 @@ pyz = PYZ(a.pure, a.zipped_data, cipher=block_cipher)
 exe = EXE(
     pyz,
     a.scripts,
-    a.binaries,       # fold in — was previously in COLLECT
+    a.binaries,       # fold in
     a.zipfiles,       # fold in
     a.datas,          # fold in
     name='WaveshareCANAnalyzer',
@@ -43,10 +43,10 @@ exe = EXE(
 # Remove the COLLECT() block entirely
 # Keep the BUNDLE() block for macOS — it wraps the single-file exe into a .app
 app = BUNDLE(
-    exe,              # pass exe directly, not coll
+    exe,
     name='WaveshareCANAnalyzer.app',
     icon='ws_can_app_icon.icns',
-    bundle_identifier='com.yourname.waveshare-can-analyzer',
+    bundle_identifier='com.aaronteo.waveshare-can-analyzer',
     info_plist={
         'NSHighResolutionCapable': True,
         'CFBundleShortVersionString': '1.0.0',
