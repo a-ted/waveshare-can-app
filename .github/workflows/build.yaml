@@ -59,7 +59,7 @@ jobs:
         if: runner.os == 'Windows'
         shell: bash
         run: |
-          mv dist/WaveshareCANAnalyser/WaveshareCANAnalyser.exe \
+          mv "dist/Waveshare CAN Analyser/Waveshare CAN Analyser.exe" \
              dist/waveshare_can_app-windows.exe
 
 
@@ -70,7 +70,7 @@ jobs:
         if: runner.os == 'Linux'
         shell: bash
         run: |
-          mv dist/WaveshareCANAnalyser/WaveshareCANAnalyser \
+          mv "dist/Waveshare CAN Analyser/Waveshare CAN Analyser" \
              dist/waveshare_can_app-linux
 
           chmod +x dist/waveshare_can_app-linux
@@ -90,14 +90,14 @@ jobs:
         run: |
           mkdir dmg_contents
 
-          cp -R dist/WaveshareCANAnalyser.app dmg_contents/
+          cp -R "dist/Waveshare CAN Analyser.app" dmg_contents/
 
           create-dmg \
             --volname "Waveshare CAN Analyser" \
             --window-size 600 400 \
-            --icon "WaveshareCANAnalyser.app" 150 150 \
+            --icon "Waveshare CAN Analyser.app" 150 150 \
             --app-drop-link 450 150 \
-            dist/waveshare_can_app-macos.dmg \
+            dist/Waveshare CAN Analyser.dmg \
             dmg_contents
 
 
@@ -146,6 +146,6 @@ jobs:
           draft: false
           prerelease: false
           files: |
-            release/waveshare_can_app-windows.exe
-            release/waveshare_can_app-linux
-            release/waveshare_can_app-macos.dmg
+            release/Waveshare CAN Analyser-windows.exe
+            release/Waveshare CAN Analyser-linux
+            release/Waveshare CAN Analyser.dmg

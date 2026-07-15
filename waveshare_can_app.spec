@@ -21,7 +21,7 @@ exe = EXE(
     a.scripts,
     [],
     exclude_binaries=True,
-    name='WaveshareCANAnalyser',
+    name='Waveshare CAN Analyser',
     debug=False,
     bootloader_ignore_signals=False,
     strip=False,
@@ -37,13 +37,13 @@ coll = COLLECT(
     a.datas,
     strip=False,
     upx=False,
-    name='WaveshareCANAnalyser',
+    name='Waveshare CAN Analyser',
 )
 
 # macOS .app bundle (ignored on Windows)
 app = BUNDLE(
     coll,
-    name='WaveshareCANAnalyser.app',
+    name='Waveshare CAN Analyser.app',
     icon='ws_can_app_icon.icns',
     bundle_identifier='com.aaronteo.waveshare-can-analyser',
     info_plist={

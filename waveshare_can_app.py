@@ -1,5 +1,5 @@
 """
-Waveshare USB-CAN-A Analyzer
+Waveshare USB-CAN-A Analyser
 A modern PyQt6 GUI for the Waveshare USB-CAN-A adapter using waveshare_can_bus.py.
 
 Usage:
@@ -507,15 +507,15 @@ class WaveshareCANApp(QMainWindow):
     # Persistent send-row state; created automatically on first save
     def _get_data_dir() -> Path:
         if sys.platform == "darwin":
-            # ~/Library/Application Support/WaveshareCANAnalyzer
+            # ~/Library/Application Support/WaveshareCANAnalyser
             base = Path(os.environ.get("HOME", "~")).expanduser() / "Library" / "Application Support"
         elif sys.platform == "win32":
-            # C:\Users\<user>\AppData\Roaming\WaveshareCANAnalyzer
+            # C:\Users\<user>\AppData\Roaming\WaveshareCANAnalyser
             base = Path(os.environ.get("APPDATA", "~\\AppData\\Roaming")).expanduser()
         else:
-            # Linux fallback: ~/.local/share/WaveshareCANAnalyzer
+            # Linux fallback: ~/.local/share/WaveshareCANAnalyser
             base = Path(os.environ.get("XDG_DATA_HOME", "~/.local/share")).expanduser()
-        return base / "WaveshareCANAnalyzer"
+        return base / "WaveshareCANAnalyser"
 
     _DATA_DIR = _get_data_dir()
     _SAVE_FILE: Path = _DATA_DIR / "send_rows.canframes"
@@ -530,7 +530,7 @@ class WaveshareCANApp(QMainWindow):
         self._rx_count = 0
         self._auto_scroll = True
 
-        self.setWindowTitle("Waveshare CAN Analyzer")
+        self.setWindowTitle("Waveshare CAN Analyser")
         self.setMinimumSize(1100, 720)
         self.resize(1280, 820)
 
@@ -554,7 +554,7 @@ class WaveshareCANApp(QMainWindow):
         header = QHBoxLayout()
         header.setSpacing(12)
 
-        title = QLabel("CAN Analyzer")
+        title = QLabel("CAN Analyser")
         title.setObjectName("heading")
         header.addWidget(title)
 
@@ -1465,7 +1465,7 @@ class WaveshareCANApp(QMainWindow):
 
 def main():
     app = QApplication(sys.argv)
-    app.setApplicationName("Waveshare CAN Analyzer")
+    app.setApplicationName("Waveshare CAN Analyser")
     app.setApplicationVersion("1.0")
 
     window = WaveshareCANApp()
