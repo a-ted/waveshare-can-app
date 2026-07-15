@@ -39,7 +39,7 @@ if sys.platform == 'win32':
         strip=False,
         upx=False,
         console=False,
-        icon='app_icon.ico',
+        icon='ws_can_app_icon.ico',
     )
 else:
     # macOS: multi-file collected into a .app bundle
@@ -53,7 +53,7 @@ else:
         strip=False,
         upx=False,
         console=False,
-        icon='app_icon.icns',
+        icon='ws_can_app_icon.icns',
     )
 
     coll = COLLECT(
@@ -69,7 +69,7 @@ else:
     app = BUNDLE(
         coll,
         name='WaveshareCANAnalyzer.app',
-        icon='app_icon.icns',
+        icon='ws_can_app_icon.icns',
         bundle_identifier='com.yourname.waveshare-can-analyzer',
         info_plist={
             'NSHighResolutionCapable': True,
