@@ -1,6 +1,9 @@
-name: Build
+name: Build and Release
 
-on: [push]
+on:
+  push:
+    tags:
+      - 'v*'          # trigger on git tags like v1.0.0
 
 jobs:
   build-macos:
@@ -11,10 +14,11 @@ jobs:
         with: { python-version: '3.11' }
       - run: pip install pyinstaller PyQt6 pyserial python-can
       - run: pyinstaller waveshare_can.spec
-      - uses: actions/upload-artifact@v4
+      - run: cd dist && zip -r WaveshareCANAnalyzer-mac.zip WaveshareCANAnalyzer.app
+      - name: Upload to release
+        uses: softprops/action-gh-release@v2
         with:
-          name: macos-app
-          path: dist/WaveshareCANAnalyzer.app
+          files: dist/WaveshareCANAnalyzer-mac.zip
 
   build-windows:
     runs-on: windows-latest
@@ -24,7 +28,8 @@ jobs:
         with: { python-version: '3.11' }
       - run: pip install pyinstaller PyQt6 pyserial python-can
       - run: pyinstaller waveshare_can.spec
-      - uses: actions/upload-artifact@v4
+      - run: Compress-Archive -Path dist\WaveshareCANAnalyzer -DestinationPath dist\WaveshareCANAnalyzer-win.zip
+      - name: Upload to release
+        uses: softprops/action-gh-release@v2
         with:
-          name: windows-exe
-          path: dist/WaveshareCANAnalyzer/
+          files: dist\WaveshareCANAnalyzer-win.zip
