@@ -12,6 +12,7 @@ jobs:
 
   build:
     name: Build (${{ matrix.os }})
+
     strategy:
       matrix:
         os:
@@ -26,10 +27,12 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.12"
+
 
       - name: Install dependencies
         run: |
@@ -37,9 +40,11 @@ jobs:
           pip install -r requirements.txt
           pip install pyinstaller
 
-      - name: Build application
+
+      - name: Build with PyInstaller
         run: |
           pyinstaller waveshare_can_app.spec --clean
+
 
       - name: Show build output
         shell: bash
@@ -47,30 +52,33 @@ jobs:
           ls -R dist
 
 
-      # ------------------------
+      # -----------------------
       # Windows
-      # ------------------------
+      # -----------------------
       - name: Package Windows
         if: runner.os == 'Windows'
         shell: bash
         run: |
-          mv dist/WaveshareCANAnalyser.exe dist/waveshare_can_app-windows.exe
+          mv dist/WaveshareCANAnalyser/WaveshareCANAnalyser.exe \
+             dist/waveshare_can_app-windows.exe
 
 
-      # ------------------------
+      # -----------------------
       # Linux
-      # ------------------------
+      # -----------------------
       - name: Package Linux
         if: runner.os == 'Linux'
         shell: bash
         run: |
-          mv dist/WaveshareCANAnalyser dist/waveshare_can_app-linux
+          mv dist/WaveshareCANAnalyser/WaveshareCANAnalyser \
+             dist/waveshare_can_app-linux
+
           chmod +x dist/waveshare_can_app-linux
 
 
-      # ------------------------
+      # -----------------------
       # macOS DMG
-      # ------------------------
+      # -----------------------
       - name: Install create-dmg
         if: runner.os == 'macOS'
         run: |
@@ -80,18 +88,22 @@ jobs:
       - name: Package macOS DMG
         if: runner.os == 'macOS'
         run: |
+          mkdir dmg_contents
+
+          cp -R dist/WaveshareCANAnalyser.app dmg_contents/
+
           create-dmg \
             --volname "Waveshare CAN Analyser" \
             --window-size 600 400 \
             --icon "WaveshareCANAnalyser.app" 150 150 \
             --app-drop-link 450 150 \
             dist/waveshare_can_app-macos.dmg \
-            dist/WaveshareCANAnalyser.app
+            dmg_contents
 
 
-      # ------------------------
-      # Upload build artifact
-      # ------------------------
+      # -----------------------
+      # Upload artifact
+      # -----------------------
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:

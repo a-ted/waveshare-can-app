@@ -1,54 +1,43 @@
-# waveshare_can.spec
-import sys
-from PyInstaller.building.build_main import Analysis, PYZ, EXE, BUNDLE, COLLECT
+# -*- mode: python ; coding: utf-8 -*-
 
-block_cipher = None
 
 a = Analysis(
     ['waveshare_can_app.py'],
-    pathex=['.'],
+    pathex=[],
     binaries=[],
-    hiddenimports=[
-        'serial.tools.list_ports',
-        'serial.tools.list_ports_posix',   # macOS/Linux
-        'serial.tools.list_ports_windows', # Windows
-        'can.interfaces',
-        'can.interfaces.serial',
-    ],
+    datas=[],
+    hiddenimports=[],
     hookspath=[],
+    hooksconfig={},
     runtime_hooks=[],
     excludes=[],
-    cipher=block_cipher,
+    noarchive=False,
+    optimize=0,
 )
-
-pyz = PYZ(a.pure, a.zipped_data, cipher=block_cipher)
+pyz = PYZ(a.pure)
 
 exe = EXE(
     pyz,
     a.scripts,
     [],
     exclude_binaries=True,
-    name='waveshare_can_app',
+    name='WaveshareCANAnalyser',
     debug=False,
     bootloader_ignore_signals=False,
     strip=False,
-    upx=True,
-    console=True,
-    disable_windowed_traceback=False,
-    argv_emulation=False,
-    target_arch=None,
-    codesign_identity=None,
-    entitlements_file=None,
+    upx=False,
+    console=False,
+    icon='ws_can_app_icon.ico',
 )
 
 coll = COLLECT(
     exe,
     a.binaries,
+    a.zipfiles,
     a.datas,
     strip=False,
-    upx=True,
-    upx_exclude=[],
-    name='waveshare_can_app',
+    upx=False,
+    name='WaveshareCANAnalyser',
 )
 
 # macOS .app bundle (ignored on Windows)
