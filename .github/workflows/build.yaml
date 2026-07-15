@@ -30,16 +30,24 @@ jobs:
 
       - name: Build executable
         run: pyinstaller waveshare_can_app.spec --clean
+      
+      - name: Show build output
+        run: |
+          ls -R dist
 
       - name: Rename executable
         run: |
           if [[ "$RUNNER_OS" == "Windows" ]]; then
-            mv dist/waveshare_can_app.exe dist/waveshare_can_app-windows.exe
+            mv dist/WaveshareCANAnalyser.exe dist/waveshare_can_app-windows.exe
+
           elif [[ "$RUNNER_OS" == "Linux" ]]; then
-            mv dist/waveshare_can_app dist/waveshare_can_app-linux
+            mv dist/WaveshareCANAnalyser dist/waveshare_can_app-linux
+
           elif [[ "$RUNNER_OS" == "macOS" ]]; then
-            mv dist/waveshare_can_app dist/waveshare_can_app-macos
+            mv dist/WaveshareCANAnalyser.app dist/waveshare_can_app-macos.app
+            zip -r dist/waveshare_can_app-macos.zip dist/waveshare_can_app-macos.app
           fi
+        shell: bash
         shell: bash
 
       - name: Upload artifact
