@@ -19,14 +19,35 @@ pyz = PYZ(a.pure)
 exe = EXE(
     pyz,
     a.scripts,
-    a.binaries,
-    a.datas,
+    [],
+    exclude_binaries=True,
     name='WaveshareCANAnalyser',
-    icon='ws_can_app_icon.ico',
+    debug=False,
+    bootloader_ignore_signals=False,
+    strip=False,
+    upx=False,
     console=False,
+    icon='ws_can_app_icon.ico',
 )
-app = BUNDLE(
+
+coll = COLLECT(
     exe,
+    a.binaries,
+    a.zipfiles,
+    a.datas,
+    strip=False,
+    upx=False,
+    name='WaveshareCANAnalyser',
+)
+
+# macOS .app bundle (ignored on Windows)
+app = BUNDLE(
+    coll,
     name='WaveshareCANAnalyser.app',
     icon='ws_can_app_icon.icns',
+    bundle_identifier='com.aaronteo.waveshare-can-analyzer',
+    info_plist={
+        'NSHighResolutionCapable': True,
+        'CFBundleShortVersionString': '1.0.0',
+    },
 )
