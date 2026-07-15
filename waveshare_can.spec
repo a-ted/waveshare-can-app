@@ -8,13 +8,11 @@ a = Analysis(
     binaries=[],
     datas=[
         ('waveshare_can_bus.py', '.'),
-        ('.waveshare_data/config.json',         '.waveshare_data'),
-        ('.waveshare_data/send_rows.canframes',  '.waveshare_data'),
     ],
     hiddenimports=[
         'serial.tools.list_ports',
-        'serial.tools.list_ports_posix',
-        'serial.tools.list_ports_windows',
+        'serial.tools.list_ports_posix',   # macOS/Linux
+        'serial.tools.list_ports_windows', # Windows
         'can.interfaces',
         'can.interfaces.serial',
     ],
